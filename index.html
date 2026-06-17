@@ -488,7 +488,9 @@ function login(){
   if(document.getElementById("pass").value==="kyu batau"){
     document.getElementById("login").style.display="none";
     document.getElementById("desktop").style.display="block";
-
+    document.getElementById("notesWindow").style.display="none";
+  }
+}
     // FORCE close notes on login
     document.getElementById("notesWindow").style.display="none";
   }
@@ -586,7 +588,6 @@ function prevPage(){
     updatePageDisplay();
   }
 }
-}
 
 /* RIGHT PANEL QUICK NOTE */
 function saveQuickNote(){
@@ -604,8 +605,6 @@ function updateQuickNoteDisplay(){
     book.innerText = "no notes yet 💭";
   }
 }
-
-updateQuickNoteDisplay();
 
 /* ================= VOICE SYSTEM ================= */
 let rec;
@@ -726,6 +725,8 @@ function animateEQ(){
     b.style.height=(dataArray[i]/255)*14+"px";
   });
 }
+
+updateQuickNoteDisplay();  
 
 </script>
 
