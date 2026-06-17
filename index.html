@@ -435,23 +435,58 @@ textarea,input{
 </div>
 
 <!-- NOTES WINDOW -->
-<div id="notesWindow" class="hidden">
-  <div id="notesHeader">
-    📖 Notes
-    <span id="notesClose" onclick="closeNotes()">✕</span>
-  </div>
-  
-  <div id="notesContent">
-    <div id="noteEditor">
-      <textarea id="windowNoteInput" placeholder="Write your note here..."></textarea>
-      <div id="editorControls">
-        <button onclick="saveWindowNote()">Save</button>
-        <button onclick="clearNote()">Clear</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div id="notesWindow" style="
+  display:none;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
 
+  width:260px;
+  height:180px;
+
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(20px);
+
+  border-radius:16px;
+  padding:10px;
+
+  font-size:11px;
+  z-index:50;
+">
+
+  <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+    <b>💌 Notes</b>
+    <button onclick="closeNotes()">✕</button>
+  </div>
+
+  <textarea id="noteInput" style="height:50px;"></textarea>
+
+  <div style="display:flex; gap:5px; margin-top:5px;">
+    <button onclick="addPage()">add</button>
+    <button onclick="prevPage()">◀</button>
+    <button onclick="nextPage()">▶</button>
+  </div>
+
+  <div id="book" style="
+    margin-top:8px;
+    padding:6px;
+    border-radius:10px;
+    background:rgba(255,255,255,0.6);
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  ">
+  </div>
+
+</div>
+<div class="icon" style="top:70px;left:40px;" onclick="openNotes()">
+  <div class="tile">♡</div>
+  <span>Notes</span>
+</div>
+  
 <script>
 
 /* LOGIN */
@@ -492,6 +527,13 @@ function clearNote(){
     document.getElementById("windowNoteInput").value = "";
     updateQuickNoteDisplay();
   }
+  function openNotes(){
+  document.getElementById("notesWindow").style.display="block";
+}
+
+function closeNotes(){
+  document.getElementById("notesWindow").style.display="none";
+}
 }
 
 /* RIGHT PANEL QUICK NOTE */
