@@ -348,7 +348,8 @@ textarea,input{
   100%{
     transform:rotateY(0deg);
     opacity:1;
-}
+  }
+                  }
   
 
 </style>
@@ -491,10 +492,7 @@ function login(){
     document.getElementById("notesWindow").style.display="none";
   }
 }
-    // FORCE close notes on login
-    document.getElementById("notesWindow").style.display="none";
-  }
-}
+
 
 /* CLOCK */
 setInterval(()=>{
@@ -548,9 +546,9 @@ notePages = []; // ensures reset
   for(let i = 0; i < currentNote.length; i += CHARS_PER_PAGE){
     notePages.push(currentNote.substring(i, i + CHARS_PER_PAGE));
   }
-}
 
-function updatePageDisplay(){
+
+  function updatePageDisplay(){
   if(notePages.length === 0 || notePages[0] !== currentNote){
   splitNoteIntoPages();
   }
@@ -561,7 +559,8 @@ function updatePageDisplay(){
   
   let pageInfo = document.getElementById("pageInfo");
   pageInfo.innerText = `Page ${currentPage + 1}/${notePages.length}`;
-}
+  }
+  
 
 function nextPage(){
   if(currentPage < notePages.length - 1){
