@@ -243,89 +243,34 @@ textarea,input{
 /* ================= NOTES WINDOW ================= */
 #notesWindow{
   position:absolute;
-  display:flex;
-  width:400px;
-  height:500px;
+  display:none;
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
 
-  background:rgba(255,255,255,0.8);
+  width:260px;
+  height:180px;
+
+  background:rgba(255,255,255,0.75);
   backdrop-filter:blur(20px);
+
   border-radius:16px;
+  padding:10px;
 
-  box-shadow:0 20px 60px rgba(0,0,0,0.15);
-  z-index:100;
-
-  flex-direction:column;
-}
-
-#notesWindow.hidden{
-  display:none;
-}
-
-#notesHeader{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 16px;
-  border-bottom:1px solid rgba(0,0,0,0.1);
-  font-weight:600;
-  font-size:13px;
-}
-
-#notesClose{
-  cursor:pointer;
-  font-size:16px;
-  opacity:0.7;
-  transition:opacity 0.2s;
-}
-
-#notesClose:hover{
-  opacity:1;
-}
-
-#notesContent{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  padding:16px;
-  gap:10px;
-  overflow-y:auto;
-}
-
-#noteEditor{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  flex:1;
-}
-
-#windowNoteInput{
-  min-height:300px;
-  resize:vertical;
-  font-family:system-ui;
-  flex:1;
-}
-
-#editorControls{
-  display:flex;
-  gap:6px;
-}
-
-#editorControls button{
-  flex:1;
-  padding:8px;
   font-size:11px;
-  border:none;
-  border-radius:8px;
-  background:rgba(100,150,255,0.2);
-  cursor:pointer;
-  transition:all 0.2s;
+  z-index:50;
 }
 
-#editorControls button:hover{
-  background:rgba(100,150,255,0.4);
+#notesBook{
+  margin-top:8px;
+  padding:6px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.6);
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
 }
 
 </style>
@@ -435,58 +380,22 @@ textarea,input{
 </div>
 
 <!-- NOTES WINDOW -->
-<div id="notesWindow" style="
-  display:none;
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-
-  width:260px;
-  height:180px;
-
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(20px);
-
-  border-radius:16px;
-  padding:10px;
-
-  font-size:11px;
-  z-index:50;
-">
+<div id="notesWindow">
 
   <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
     <b>💌 Notes</b>
-    <button onclick="closeNotes()">✕</button>
+    <div>
+      <button onclick="saveWindowNote()">Save</button>
+      <button onclick="closeNotes()">✕</button>
+    </div>
   </div>
 
-  <textarea id="noteInput" style="height:50px;"></textarea>
+  <textarea id="windowNoteInput" style="height:70px; resize:vertical;"></textarea>
 
-  <div style="display:flex; gap:5px; margin-top:5px;">
-    <button onclick="addPage()">add</button>
-    <button onclick="prevPage()">◀</button>
-    <button onclick="nextPage()">▶</button>
-  </div>
-
-  <div id="book" style="
-    margin-top:8px;
-    padding:6px;
-    border-radius:10px;
-    background:rgba(255,255,255,0.6);
-    height:60px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-  ">
-  </div>
+  <div id="notesBook"></div>
 
 </div>
-<div class="icon" style="top:70px;left:40px;" onclick="openNotes()">
-  <div class="tile">♡</div>
-  <span>Notes</span>
-</div>
-  
+
 <script>
 
 /* LOGIN */
@@ -507,18 +416,21 @@ let currentNote = "";
 
 /* NOTES WINDOW */
 function openNotes(){
-  document.getElementById("notesWindow").classList.remove("hidden");
+  const wnd = document.getElementById("notesWindow");
   document.getElementById("windowNoteInput").value = currentNote;
+  wnd.style.display = 'block';
+  updateQuickNoteDisplay();
 }
 
 function closeNotes(){
-  document.getElementById("notesWindow").classList.add("hidden");
+  document.getElementById("notesWindow").style.display = 'none';
 }
 
 function saveWindowNote(){
   currentNote = document.getElementById("windowNoteInput").value;
   updateQuickNoteDisplay();
   alert("Note saved!");
+  closeNotes();
 }
 
 function clearNote(){
@@ -527,13 +439,6 @@ function clearNote(){
     document.getElementById("windowNoteInput").value = "";
     updateQuickNoteDisplay();
   }
-  function openNotes(){
-  document.getElementById("notesWindow").style.display="block";
-}
-
-function closeNotes(){
-  document.getElementById("notesWindow").style.display="none";
-}
 }
 
 /* RIGHT PANEL QUICK NOTE */
@@ -545,11 +450,14 @@ function saveQuickNote(){
 
 function updateQuickNoteDisplay(){
   let book = document.getElementById("book");
-  if(currentNote.trim()){
+  if(currentNote && currentNote.trim()){
     book.innerText = currentNote;
   } else {
     book.innerText = "no notes yet 💭";
   }
+  // also update notes window preview if open
+  let nb = document.getElementById("notesBook");
+  if(nb){ nb.innerText = book.innerText; }
 }
 
 updateQuickNoteDisplay();
@@ -568,6 +476,8 @@ function startRec(){
     rec.ondataavailable=e=>{
       chunks.push(e.data);
     };
+  }).catch(err=>{
+    alert('Microphone access denied or not available');
   });
 }
 
@@ -653,7 +563,7 @@ function toggleCD(){
     a.play();
     cdPlaying=true;
     d.classList.add("spin");
-    audioCtx.resume();
+    if(audioCtx) audioCtx.resume();
   }else{
     a.pause();
     cdPlaying=false;
